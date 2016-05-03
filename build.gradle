@@ -1,0 +1,89 @@
+//Note: this section 'buildscript` is only for the dependencies of the buildscript itself.
+// See the second 'repositories' section below for the actual dependencies of GATK itself
+buildscript {
+    repositories {
+        mavenCentral()
+     }
+}
+
+plugins {
+    id "java"
+    id "application"
+}
+
+//Delete the windows script - we never test on Windows so let's not pretend it works
+startScripts {
+    doLast {
+        delete windowsScript
+    }
+}
+
+repositories {
+    mavenCentral()
+    jcenter()
+
+    maven {
+        url "https://artifactory.broadinstitute.org/artifactory/libs-snapshot/" //for htsjdk snapshots
+    }
+}
+
+//NOTE: we ignore contracts for now
+compileJava {
+  options.compilerArgs = ['-proc:none', '-Xlint:all','-Werror','-Xdiags:verbose']
+}
+compileTestJava {
+  options.compilerArgs = ['-proc:none', '-Xlint:all','-Werror','-Xdiags:verbose']
+}
+
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+def String deriveVersion(){
+    def stdout = new ByteArrayOutputStream()
+    try {
+        logger.info("path is $System.env.PATH")
+        exec {
+            commandLine "git", "describe", "--always"
+            standardOutput = stdout;
+
+            ignoreExitValue = true
+        }
+    } catch (GradleException e) {
+        logger.error("Couldn't determine version.  " + e.getMessage())
+    }
+    return stdout.size() > 0 ? stdout.toString().trim() : "version-unknown"
+}
+final SNAPSHOT = "-SNAPSHOT"
+version = deriveVersion() + SNAPSHOT  //all builds are snapshot builds until we decide that there is something we want to keep
+boolean isRelease = ! version.endsWith(SNAPSHOT)
+logger.info("build for version:" + version)
+group = 'org.broadinstitute'
+
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.12'
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from 'build/docs/javadoc'
+}
+
+task sourcesJar(type: Jar) {
+    from sourceSets.main.allSource
+    classifier = 'sources'
+}
+
+// This is a hack to disable the java 8 default javadoc lint until we fix the html formatting
+if (JavaVersion.current().isJava8Compatible()) {
+    tasks.withType(Javadoc) {
+        options.addStringOption('Xdoclint:none', '-quiet')
+    }
+}
+
+task installAll{  dependsOn installDist }
+
+build.dependsOn installDist
+check.dependsOn installDist
+
