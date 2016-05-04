@@ -1,0 +1,23 @@
+.idea/
+*.ipr
+*.iml
+*.iws
+*.iml
+.gradle
+build/
+.idea/libraries/Gradle__*
+*.*~
+.DS_Store
+testSortingFile.txt
+gsalib.tar.gz
+*.swp
+gradlew.bat
+tmp/
+src/main/java/local/
+
+#Please don't commit me
+client_secret.json
+servicekey.json
+
+#Test Generated File
+I_SHOULD_HAVE_BEEN_DELETED
