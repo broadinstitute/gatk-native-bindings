@@ -7,6 +7,8 @@ buildscript {
 
 plugins {
     id "java"
+    id 'maven'
+    id 'signing'
 }
 
 compileJava {
@@ -22,7 +24,7 @@ logger.info("build for version:" + version)
 group = 'org.broadinstitute'
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '2.12'
+    gradleVersion = '2.13'
 }
 
 task javadocJar(type: Jar, dependsOn: javadoc) {
@@ -39,5 +41,72 @@ task sourcesJar(type: Jar) {
 if (JavaVersion.current().isJava8Compatible()) {
     tasks.withType(Javadoc) {
         options.addStringOption('Xdoclint:none', '-quiet')
+    }
+}
+/**
+ *This specifies what artifacts will be built and uploaded when performing a maven upload.
+ */
+artifacts {
+    archives jar
+    archives javadocJar
+    archives sourcesJar
+}
+
+/**
+ * Sign non-snapshot releases with our secret key.  This should never need to be invoked directly.
+ */
+signing {
+    required { gradle.taskGraph.hasTask("uploadArchives") }
+    sign configurations.archives
+}
+
+/**
+ * Upload a release to sonatype.  You must be an authorized uploader and have your sonatype
+ * username and password information in your gradle properties file. 
+ *
+ * For releasing to your local maven repo, use gradle install
+ */
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+
+            repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+                authentication(userName: project.findProperty("sonatypeUsername"), password: project.findProperty("sonatypePassword"))
+            }
+
+            pom.project {
+                name 'gatk-native-bindings'
+                packaging 'jar'
+                description 'Bindings for native libraries to implement to be compatible with GATK4'
+                url 'http://github.com/broadinstitute/gatk-native-bindings'
+
+
+                scm {
+                    url 'scm:git@github.com:broadinstitute/gatk-native-bindings.git'
+                    connection 'scm:git@github.com:broadinstitute/gatk-native-bindings.git'
+                    developerConnection 'scm:git@github.com:broadinstitute/gatk-native-bindings.git'
+                }
+
+                developers {
+                    developer {
+                        id = "gatkdev"
+                        name = "GATK Development Team"
+                        email = "gatk-dev-public@broadinstitute.org"
+                    }
+                }
+
+                licenses {
+                    license {
+                        name 'BSD 3-Clause'
+                        url 'https://github.com/broadinstitute/gatk-native-bindings/blob/master/LICENSE.TXT'
+                        distribution 'repo'
+                    }
+                }
+            }
+        }
+    }
+    doFirst{
+        System.out.println("Uploading version $version")
     }
 }
