@@ -1,20 +1,20 @@
 package org.broadinstitute.gatk.nativebindings;
 
-import java.nio.file.Path;
+import java.io.File;
 
 /**
  * Common interface for all native libraries.
  */
 public interface NativeLibrary {
-    /**
-     * Returns the path to this native library.
-     * Typically this is the path to the shared object file. GATK will use this path to load the native library.
-     */
-    Path getLibraryPath();
 
     /**
-     * Returns true if this native library is supported on the current combination of hardware, operating system, etc.
-     * Return false otherwise.
+     * Attempts to load this native library. Returns true if loading was successful <bold>and</bold> the library is supported
+     * on the current hardware/software stack. Implementations should ensure that this method does not throw an {@link UnsatisfiedLinkError}.
+     * Note that the GATK engine will call this method once per instance and multiple instances may use the same tmpDir.
+     *
+     * @param tmpDir the temporary directory to which all files, including the library itself, are to be extracted.
+     * @return true if the library was successfully loaded and is supported on the current hardware/software stack, false otherwise.
      */
-    boolean isSupported();
+    boolean load(File tmpDir);
+
 }
