@@ -7,10 +7,10 @@ public class PairHMMNativeArguments {
     /**
      * The maximum number of threads to use in the PairHMM computation.
      */
-    int maxNumberOfThreads;
+    public int maxNumberOfThreads;
 
     /**
      * True if the PairHMM calculations should use double precision floating-point arithmetic, false otherwise.
      */
-    boolean useDoublePrecision;
+    public boolean useDoublePrecision;
 }
