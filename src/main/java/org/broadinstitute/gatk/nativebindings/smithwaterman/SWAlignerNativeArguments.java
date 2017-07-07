@@ -9,7 +9,7 @@ public class SWAlignerNativeArguments {
      * What strategy should we use when the best path does not start/end at the corners of the matrix?
      */
 
-    public SWAlignerNativeArguments(final OverhangStrategy strategy, final int w_extend, final int w_match, int w_mismatch, int w_open)
+    public SWAlignerNativeArguments(final OverhangStrategy strategy, final int w_extend, final int w_match, final int w_mismatch, final int w_open)
     {
 
         this.strategy = strategy;
