@@ -11,7 +11,17 @@ public class SWAlignerNativeArguments {
 
     public SWAlignerNativeArguments(final OverhangStrategy strategy, final int w_extend, final int w_match, final int w_mismatch, final int w_open)
     {
-
+        
+        if( w_mismatch > 0) {
+            throw new IllegalArgumentException("w_mismatch must be <= 0");
+        }
+        if( w_open > 0) {
+            throw new IllegalArgumentException("w_open must be <= 0");
+        }
+        if( w_extend > 0) {
+            throw new IllegalArgumentException("w_extend must be <= 0");
+        }
+        
         this.strategy = strategy;
         this.w_extend = w_extend;
         this.w_match = w_match;
