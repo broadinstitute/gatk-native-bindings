@@ -24,13 +24,13 @@ public final class SWAlignerNativeArguments {
         if ( strategy == null ) {
             throw new IllegalArgumentException("strategy must not be null");
         }
-        if( w_extend > 0) {
+        if( w_extend > 0 ) {
             throw new IllegalArgumentException("w_extend must be <= 0 but was passed as " + w_extend);
         }
-        if( w_mismatch > 0) {
+        if( w_mismatch > 0 ) {
             throw new IllegalArgumentException("w_mismatch must be <= 0 but was passed as " + w_mismatch);
         }
-        if( w_open > 0) {
+        if( w_open > 0 ) {
             throw new IllegalArgumentException("w_open must be <= 0 but was passed as " + w_open);
         }
 
