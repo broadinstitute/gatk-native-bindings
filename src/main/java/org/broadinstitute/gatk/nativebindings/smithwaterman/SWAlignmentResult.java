@@ -3,7 +3,7 @@ package org.broadinstitute.gatk.nativebindings.smithwaterman;
 /**
  * Struct used to hold results of the Smith-Waterman alignment result
  */
-public class SWAlignmentResult {
+public final class SWAlignmentResult {
     // CIGAR string of the alignment
     public final String cigar;
 
