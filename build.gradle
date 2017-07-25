@@ -18,13 +18,13 @@ compileJava {
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
-version = "0.0.3"
+version = "0.0.4"
 logger.info("build for version:" + version)
 
 group = 'org.broadinstitute'
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '2.13'
+    gradleVersion = '4.0.1'
 }
 
 task javadocJar(type: Jar, dependsOn: javadoc) {
