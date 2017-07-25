@@ -3,7 +3,7 @@ package org.broadinstitute.gatk.nativebindings.smithwaterman;
 /**
  * Struct used to pass arguments to the Smith-Waterman aligner
  */
-public final class SWAlignerNativeArguments {
+public final class SWAlignerArguments {
     /** how to treat overhangs **/
     public final OverhangStrategy strategy;
 
@@ -19,7 +19,7 @@ public final class SWAlignerNativeArguments {
     /** gap extension penalty **/
     public final int w_extend;
 
-    public SWAlignerNativeArguments(final OverhangStrategy strategy, final int w_extend, final int w_match, final int w_mismatch, final int w_open)
+    public SWAlignerArguments(final OverhangStrategy strategy, final int w_extend, final int w_match, final int w_mismatch, final int w_open)
     {
         if ( strategy == null ) {
             throw new IllegalArgumentException("strategy must not be null");
