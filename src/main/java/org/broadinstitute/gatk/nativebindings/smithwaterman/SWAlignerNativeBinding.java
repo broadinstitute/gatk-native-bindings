@@ -2,12 +2,10 @@ package org.broadinstitute.gatk.nativebindings.smithwaterman;
 
 
 import org.broadinstitute.gatk.nativebindings.NativeLibrary;
-import org.broadinstitute.gatk.nativebindings.smithwaterman.SWAlignerNativeArguments;
-import org.broadinstitute.gatk.nativebindings.smithwaterman.SWAlignmentResult;
 
 /**
  * Provides access to the native kernel of the Smith-Waterman computation.
- * GATK will call {@link #initialize(SWAlignerNativeArguments)} to set the
+ * GATK will call {@link #initialize(SWAlignerArguments)} to set the
  * parameter values and will call {@link #align(byte[], byte[])} to perform
  * an alignment.
  *
@@ -20,7 +18,7 @@ public interface SWAlignerNativeBinding extends NativeLibrary {
      *
      * @param args arguments used for Smith-Waterman
      */
-    void initialize(SWAlignerNativeArguments args);
+    void initialize(SWAlignerArguments args);
 
     /**
      * Perform a Smith-Waterman alignment and return the result
