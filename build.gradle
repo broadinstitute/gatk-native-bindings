@@ -18,7 +18,7 @@ compileJava {
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
-version = "0.0.4"
+version = "0.0.5"
 logger.info("build for version:" + version)
 
 group = 'org.broadinstitute'
