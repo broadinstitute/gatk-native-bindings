@@ -9,6 +9,7 @@ plugins {
     id "java"
     id 'maven'
     id 'signing'
+    id 'com.palantir.git-version' version '0.5.1' //version helper
 }
 
 compileJava {
@@ -18,7 +19,9 @@ compileJava {
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
-version = "0.0.5"
+final isRelease = Boolean.getBoolean("release")
+version = (isRelease ? gitVersion() : gitVersion() + "-SNAPSHOT").replaceAll(".dirty", "")
+
 logger.info("build for version:" + version)
 
 group = 'org.broadinstitute'
@@ -73,6 +76,10 @@ uploadArchives {
 
             repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
                 authentication(userName: project.findProperty("sonatypeUsername"), password: project.findProperty("sonatypePassword"))
+            }
+
+            snapshotRepository(url: "https://broadinstitute.jfrog.io/broadinstitute/libs-snapshot-local/") {
+                authentication(userName: System.env.ARTIFACTORY_USERNAME, password: System.env.ARTIFACTORY_PASSWORD)
             }
 
             pom.project {
