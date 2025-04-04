@@ -48,9 +48,9 @@ publishing {
             from components.java
 
             pom {
-                name ='gatk-native-bindings'
-                packaging ='jar'
-                description ='Bindings for native libraries to implement to be compatible with GATK4'
+                name = 'gatk-native-bindings'
+                packaging = 'jar'
+                description = 'Bindings for native libraries to implement to be compatible with GATK4'
                 url = 'http://github.com/broadinstitute/gatk-native-bindings'
 
 
@@ -70,7 +70,7 @@ publishing {
 
                 licenses {
                     license {
-                        name ='BSD 3-Clause'
+                        name = 'BSD 3-Clause'
                         url = 'https://github.com/broadinstitute/gatk-native-bindings/blob/master/LICENSE.TXT'
                         distribution = 'repo'
                     }
@@ -79,15 +79,27 @@ publishing {
         }
     }
 
-    /**
-     * Sign non-snapshot releases with our secret key.  This should never need to be invoked directly.
-     */
-    signing {
-        required = { isRelease && gradle.taskGraph.hasTask("publishGatkNativeBindingsPublicationToMavenRepository") }
-        sign publishing.publications.gatkNativeBindings
+    repositories {
+        maven {
+            credentials {
+                username = isRelease ? project.findProperty("sonatypeUsername") : System.env.ARTIFACTORY_USERNAME
+                password = isRelease ? project.findProperty("sonatypePassword") : System.env.ARTIFACTORY_PASSWORD
+            }
+            def release = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+            def snapshot = "https://broadinstitute.jfrog.io/broadinstitute/libs-snapshot-local/"
+            url = isRelease ? release : snapshot
+        }
     }
-
-    tasks.register('install') { dependsOn publishToMavenLocal }
-
 }
+
+/**
+ * Sign non-snapshot releases with our secret key.  This should never need to be invoked directly.
+ */
+signing {
+    required = { isRelease && gradle.taskGraph.hasTask("publishGatkNativeBindingsPublicationToMavenRepository") }
+    sign publishing.publications.gatkNativeBindings
+}
+
+tasks.register('install') { dependsOn publishToMavenLocal }
+
 
